@@ -33,7 +33,7 @@ export default function Recipes() {
             <div>
               <h2>{e.title}</h2>
               <img src={e.image} alt="image" />
-              <p>{e.summary}</p>
+              <p dangerouslySetInnerHTML={{__html: e.summary}} / >
             </div>
           );
         })}
