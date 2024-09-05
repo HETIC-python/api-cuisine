@@ -6,7 +6,7 @@ const Recipe = require('../models/recipe');
 const Like = require('../models/likes');
 /* GET home page. */
 router.post('/getrecipe', async function (req, res, next) {
-    console.log('reçu');
+    console.log('reçu', process.env);
     try {
         const queries = new URLSearchParams({
             apiKey: process.env.APIKEY,
@@ -20,10 +20,11 @@ router.post('/getrecipe', async function (req, res, next) {
         const kitchenApi = await fetch(`https://api.spoonacular.com/recipes/complexSearch?${queries}`)
         const data = await kitchenApi.json()
         if (data?.results?.length === 0) {
-            res.json({ success: false, message: "No recipe found" })
+            return res.json({ success: false, message: "No recipe found" })
         }
 
-        let models = await Promise.all(data.results.map(async (recipe) => {
+        console.log(data);
+        let models = await Promise.all(data?.results?.map(async (recipe) => {
             const model = new Recipe({
                 title: recipe.title,
                 image: recipe.image,

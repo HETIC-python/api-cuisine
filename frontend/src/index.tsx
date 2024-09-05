@@ -1,5 +1,5 @@
 import { useState } from "react"
-
+import Result from "./components/result"
 
 export default function Index () {
 
@@ -44,15 +44,8 @@ export default function Index () {
 
             <div>
                 {
-                    data.map((e :any) => {
-                        return (
-                            <div>
-                                <h2>{e.title}</h2>
-                                <img src={e.image} alt="image" />
-                                <p>{e.summary}</p>
-                            </div>
-                        )
-                    })
+                            <Result data = {data} />
+            
                 }
             </div>
           </div>
