@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 var fetch = require('node-fetch');
 const Recipe = require('../models/recipe');
+const Like = require('../models/likes');
 /* GET home page. */
 router.post('/getrecipe', async function (req, res, next) {
     console.log('reçu');
@@ -50,6 +51,59 @@ router.post('/getrecipe', async function (req, res, next) {
         res.status(200).json({ success: true, data : models })
     }
     catch (error) {
+        console.log("error", error)
+        res.json({ success: false, message: "error" })
+    }
+});
+
+
+
+router.get('/all-recipes', async function (req, res, next) {
+    try {
+        const data = await Recipe.find()
+        res.status(200).json({ success: true, data })
+    } catch (error) {
+        console.log("error", error)
+        res.json({ success: false, message: "error" })
+    }
+});
+
+router.get('/like/:id', async function (req, res, next) {
+    try {
+        const id = req.params.id
+        if (!id) {
+            res.json({ success: false, message: "id is required" })
+        }
+        const recipe = await Recipe.findById(req.params.id)
+        if (!recipe) {
+            return res.json({ success: false, message: "No recipe found" })
+        }
+        const like = await Like.findOne({ recipeId: recipe._id })
+        console.log("like", like)
+        if (!like) {
+            return res.status(400).json({ success: false, like: false })
+        }
+        return res.status(200).json({ success: true, like: !!like })
+    } catch (error) {
+        console.log("error", error)
+        return res.json({ success: false, message: "error" })
+    }
+});
+
+router.post('/like/:id', async function (req, res, next) {
+    try {
+        const id = req.params.id
+        if (!id) {
+            return res.json({ success: false, message: "id is required" })
+        }
+        const recipe = await Recipe.findById(req.params.id)
+        if (!recipe) {
+            return res.json({ success: false, message: "No recipe found" })
+        }
+        let like = new Like({ recipeId: recipe._id })
+        like = await like.save()
+        return res.status(200).json({ success: true, data: recipe })
+    } catch (error) {
         console.log("error", error)
         res.json({ success: false, message: "error" })
     }
