@@ -4,13 +4,14 @@ var router = express.Router();
 var fetch = require('node-fetch');
 const Recipe = require('../models/recipe');
 /* GET home page. */
-router.get('/getrecipe', async function (req, res, next) {
+router.post('/getrecipe', async function (req, res, next) {
+    console.log('reçu');
     try {
         const queries = new URLSearchParams({
             apiKey: process.env.APIKEY,
             // author: true,
             // from front
-            includeIngredients: "tomato,cheese",
+            includeIngredients: req.body.ingredients,
             addRecipeInformation: true,
             fillIngredients: true,
 
@@ -46,7 +47,7 @@ router.get('/getrecipe', async function (req, res, next) {
             return saved
         }))
 
-        res.status(200).json({ success: true, models })
+        res.status(200).json({ success: true, data : models })
     }
     catch (error) {
         console.log("error", error)
