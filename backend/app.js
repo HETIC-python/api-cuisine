@@ -6,6 +6,7 @@ var dotenv = require("dotenv")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
+var mongoose = require('mongoose');
 dotenv.config({path :"../.env"})
 var app = express();
 
@@ -15,6 +16,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+async function connectDB(){
+    try {
+        console.log("Connecting to MongoDB")
+        await mongoose.connect(process.env.MONGO_URI)
+        console.log("MongoDB connected")
+    } catch (error) {
+        console.log("MongoDB connection failed", error)
+    }
+}
+
+connectDB()
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api/v1', apiRouter);
